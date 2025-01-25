@@ -105,7 +105,11 @@ class ProfileForm(forms.ModelForm):
 class ProductSchemeForm(forms.ModelForm):
     class Meta:
         model = ProductScheme
-        fields = ['product_id','investment', 'total', 'days']
+        fields = ['product_id', 'investment', 'days']
+        widgets = {
+            'product_id': forms.TextInput(attrs={'readonly': True}),
+            'days': forms.TextInput(attrs={'readonly': True}),
+            }
 
 
 

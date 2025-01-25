@@ -1,263 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 20px;
-      }
-      h2 {
-        text-align: center;
-      }
-      .container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .form-group {
-        margin-bottom: 15px;
-      }
-      label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-      }
-      input, select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      button {
-        width: 45%;
-        padding: 10px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #218838;
-      }
-
-      /* Popup styles */
-      .popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-      }
-      .popup-content {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        width: 400px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-      .popup-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-      }
-
-      /* Edit and Confirm button styles */
-      .edit-btn, .confirm-btn {
-        padding: 6px 12px;  /* Reduced padding */
-        font-size: 14px; /* Smaller font size */
-        background-color: white; /* White background */
-        color: blue; /* Blue text color */
-        border: 1px solid #007bff; /* Blue border */
-        border-radius: 5px;
-        cursor: pointer;
-        width: auto;  /* Allow buttons to resize based on content */
-      }
-      .edit-btn:hover, .confirm-btn:hover {
-        background-color: #e0e0e0; /* Slight gray background on hover */
-        color: blue; /* Keep blue text on hover */
-        border-color: #007bff; /* Keep blue border on hover */
-      }
-
-      /* Add a blinking cursor effect */
-      input:focus, select:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-      }
-
-      /* Specific style for the Calculate button */
-      #calculateButton {
-        width: auto; /* Allow the width to adjust to the content */
-        padding: 8px 16px; /* Adjusted padding for smaller size */
-        font-size: 14px; /* Smaller font size */
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-
-      #calculateButton:hover {
-        background-color: #218838;
-      }
-
-    </style>
-  </head>
-  <body>
-    <!-- Form for Product Scheme Management -->
-    <div class="container">
-      <h1>Product Scheme Management</h1>
-      <form id="schemeForm">
-        <div class="form-group">
-          <label for="product_id">Product ID:</label>
-          <input type="text" id="product_id" name="product_id" value="{{ product_id }}" placeholder="Enter Product ID" required readonly="">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .alert {
+      padding: 15px;
+      background-color: #f44336;
+      color: white;
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+    .alert-success {
+      background-color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Product Scheme Management</h1>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+          {{ message }}
         </div>
-        <div class="form-group">
-          <label for="investment">Investment:</label>
-          <select id="investment" required="">
-            <option value="" disabled="" selected="">Select Investment Amount</option>
-            <option value="200">200</option>
-            <option value="500">500</option>
-            <option value="1000">1000</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="total">Total:</label>
-          <input type="text" id="total" placeholder="Enter Total" required readonly="" value="{{ total }}">
-        </div>
-        <button type="submit" id="calculateButton">Calculate</button>
-      </form>
-    </div>
-
-    <!-- Popup for Editing the Details -->
-    <div class="popup" id="popup" style="display: none;">
-      <div class="popup-content">
-        <h1>Edit Product Scheme</h1>
-        <div>
-          <p><strong>Product ID:</strong> <span id="popup_product_id">{{product_id}}</span></p>
-          <p><strong>Investment:</strong> <span id="popup_investment">{{investment}}</span></p>
-          <p><strong>Starting Date:</strong> <span id="popup_start_date">{{start_date}}</span></p>
-          <p><strong>Ending Date:</strong> <span id="popup_end_date">{{end_dat}}</span></p>
-          <p><strong>Number of Days:</strong> <span id="popup_days">{{days}}</span></p>
-          <p><strong>Total:</strong> ₹<span id="popup_total">{{total}}</span></p>
-        </div>  
-        <div class="popup-buttons">
-          <button type="button" id="editBtn" class="edit-btn">Edit</button>
-          <button type="button" id="confirmBtn" class="confirm-btn">
-            <a href="{% url 'prod-his' %}?product_id={{ product_id }}&investment={{ investment }}&total={{ total }}&balance={{ balance }}&backcount={{ backcount }}">Confirm</a>
-        </button>
-        
-        </div>
+      {% endfor %}
+    {% endif %}
+    <form method="post" id="schemeForm">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="product_id">Product ID:</label>
+        <input type="text" id="product_id" name="product_id" value="{{ product_id }}" readonly>
       </div>
-    </div>
+      <div class="form-group">
+        <label for="investment">Investment:</label>
+        <select id="investment" name="investment" required>
+          <option value="" disabled selected>Select Investment Amount</option>
+          <option value="200">200</option>
+          <option value="500">500</option>
+          <option value="1000">1000</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="total">Total:</label>
+        <input type="text" id="total" name="total" value="{{ total }}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="days">Number of Days:</label>
+        <input type="text" id="days" name="days" value="" readonly>
+      </div>
+      <button type="submit" id="saveButton">Save Scheme</button>
+    </form>
+  </div>
 
-    <script>
-    // Function to calculate the number of days based on total and investment
-function calculateDaysFromTotal(investment, total) {
-  return total / investment; // Calculate the days based on the total and investment
-}
+  <script>
+    // Calculate and display the number of days based on investment and total
+    document.getElementById('investment').addEventListener('change', function () {
+      const investment = parseFloat(this.value);
+      const total = parseFloat(document.getElementById('total').value);
 
-// Show the popup when "Calculate" is clicked
-document.getElementById('schemeForm').addEventListener('submit', function (e) {
-  e.preventDefault();
+      if (!isNaN(investment) && !isNaN(total)) {
+        const days = total / investment;
+        document.getElementById('days').value = days.toFixed(0); // Display calculated days
+      } else {
+        document.getElementById('days').value = ''; // Clear days if invalid
+      }
+    });
 
-  const productId = document.getElementById('product_id').value;
-  const investment = parseFloat(document.getElementById('investment').value);
-  const total = parseFloat(document.getElementById('total').value);
+    // Handle form submission
+    document.getElementById('schemeForm').addEventListener('submit', function (e) {
+      const investment = parseFloat(document.getElementById('investment').value);
+      const total = parseFloat(document.getElementById('total').value);
 
-  // Calculate the number of days based on the investment and total
-  const days = calculateDaysFromTotal(investment, total);
-
-  // Format dates to dd-mm-yyyy
-  const startDate = new Date(); // Use current date for starting date
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + days); // Adjust end date based on calculated days
-
-  const formatDate = (date) => date.toLocaleDateString('en-GB');
-
-  // Populate the popup with values
-  // document.getElementById('popup_product_id').innerText = productId;
-  // document.getElementById('popup_investment').innerText = investment;
-  // document.getElementById('popup_start_date').innerText = formatDate(startDate);
-  // document.getElementById('popup_end_date').innerText = formatDate(endDate);
-  // document.getElementById('popup_days').innerText = days.toFixed(0); // Show rounded number of days
-  // document.getElementById('popup_total').innerText = total;
-
-  // Show the popup
-  document.getElementById('popup').style.display = 'flex';
-});
-
-// Edit button logic: Close the popup and enable fields for editing
-document.getElementById('editBtn').addEventListener('click', function () {
-  // Hide the popup
-  document.getElementById('popup').style.display = 'none';
-
-  // Enable form fields for editing
-  document.getElementById('investment').disabled = false;
-  document.getElementById('total').disabled = false;
-
-  // Focus on the first editable field (Investment dropdown) and show cursor
-  document.getElementById('investment').focus();
-});
-
-// Confirm button logic: Save and close the popup
-document.getElementById('confirmBtn').addEventListener('click', function () {
-  const investment = parseFloat(document.getElementById('investment').value);
-  const total = parseFloat(document.getElementById('total').value);
-
-  // Calculate the number of days based on the total and investment
-  const days = calculateDaysFromTotal(investment, total);
-
-  // Update the total and days in the popup
-  document.getElementById('popup_days').innerText = days.toFixed(0);
-  document.getElementById('popup_total').innerText = total;
-
-  // Show alert confirming that the data is saved
-  alert('Data saved!');
-
-  // Hide the popup
-  document.getElementById('popup').style.display = 'none';
-});
-
-// Attach event listeners to all "View More" buttons
-document.querySelectorAll('.buy-btn').forEach(button => {
-  button.addEventListener('click', function () {
-    const productId = this.getAttribute('data-product-id');
-    const investment = parseFloat(this.getAttribute('data-investment'));
-    const total = parseFloat(this.getAttribute('data-total'));
-
-    // Populate the fields in the form
-    document.getElementById('product_id').value = productId;
-    document.getElementById('investment').value = investment;
-    document.getElementById('total').value = total;
-
-    // Automatically calculate the number of days
-    const days = calculateDaysFromTotal(investment, total);
-    console.log(`Days: ${days}`);
-
-    // Redirect to scheme page
-    window.location.href = `prod_his?product_id=${productId}&investment=${investment}&days=${days}`;
-    console.log(`Investment Value Before Redirect: ${investment}`);
-
-  });
-});
-
-    </script>   
-  </body>
+      if (isNaN(investment) || isNaN(total)) {
+        e.preventDefault();
+        alert('Please select a valid investment amount.');
+      } else {
+        alert('Product Scheme saved successfully!');
+      }
+    });
+  </script>
+</body>
 </html>

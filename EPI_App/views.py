@@ -159,39 +159,61 @@ def referral_view(request):
     return render(request, 'refar.html', context)
 
 
-def product_scheme_manage(request):
-    product_id = request.GET.get('id')
-    total = request.GET.get('total')
+from datetime import datetime, timedelta
+from django.shortcuts import render, redirect
+from .forms import ProductSchemeForm
+from .models import Services
 
+from django.shortcuts import render, redirect
+from datetime import datetime
+from .models import Services, ProductScheme
+from .forms import ProductSchemeForm
+
+def product_scheme_manage(request):
+    product_id = request.GET.get('id')  # Fetch `id` (service ID) from the request
+    total = request.GET.get('total')  # Fetch `total` from the request
+
+    # Fetch the product_id and total from the Services model
     if product_id:
         try:
-  
-            service = Services.objects.get(id=product_id)
-            product_id = service.product_id
-            total = service.total
-            
+            service = Services.objects.get(id=product_id)  # Fetch service based on ID
+            product_id = service.product_id  # Extract product_id from the service
+            total = service.total  # Extract total from the service
         except Services.DoesNotExist:
-            product_id = None
+            product_id = None  # Reset to None if the service is not found
             total = None
 
     if request.method == 'POST':
         form = ProductSchemeForm(request.POST)
         if form.is_valid():
             scheme = form.save(commit=False)
-            scheme.start_date = datetime.now()
-            scheme.end_date = scheme.start_date + \
-                timedelta(days=form.cleaned_data['days'])
-            scheme.save()
-            return redirect('payment')
-    else:
-        form = ProductSchemeForm(
-            initial={'product_id': product_id, 'total': total})
 
+            # Explicitly set product_id and total to ensure they are saved
+            scheme.product_id = product_id
+            scheme.total = total
+            scheme.start_date = datetime.now()  # Set start date to current date
+
+            # The end_date will be automatically calculated in the model during save
+            scheme.save()  # Save the scheme, which will also calculate the end_date
+
+            return redirect('payment')  # Redirect to the payment page
+    else:
+        # Pass initial values for product_id and total to the form
+        form = ProductSchemeForm(initial={
+            'product_id': product_id,
+            'total': total,
+        })
+
+    # Render the template with the form and context
     return render(request, 'product_scheme_manage.html', {
         'form': form,
         'product_id': product_id,
-        'total': total
+        'total': total,
     })
+
+
+
+
 def prod_his(request):
     product_id = request.GET.get('product_id')
     total = request.GET.get('total')

@@ -13,7 +13,9 @@ class ServicesAdmin(admin.ModelAdmin):
     list_filter = ('total',)
 
 class ProductSchemeAdmin(admin.ModelAdmin):
-    list_display = ('product_id','investment', 'total', 'days')
+    list_display = ('product_id','investment', 'total', 'days', 'start_date', 'end_date')
+    search_fields = ['product_id']
+    list_filter = ['investment']
 
 class Pay_hisAdmin(admin.ModelAdmin):
     list_display = ('product_id', 'title', 'img', 'investments', 'total', 'balance', 'backcount')
@@ -25,7 +27,7 @@ class ReferralAdmin(admin.ModelAdmin):
 
 admin.site.register(Profile,ProfileAdmin)
 admin.site.register(Services,ServicesAdmin)
-admin.site.register(ProductScheme,ProductSchemeAdmin)
 admin.site.register(Referral,ReferralAdmin)
 admin.site.register(pay_his)
 admin.site.register(Payment)
+admin.site.register(ProductScheme,ProductSchemeAdmin)

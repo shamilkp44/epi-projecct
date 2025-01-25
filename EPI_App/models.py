@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 import string
 import random
 from django.utils import timezone
+from datetime import timedelta
+
+
 
 # Create your models here.
 class Profile(models.Model):
@@ -43,16 +46,30 @@ class Services(models.Model):
     def __str__(self):
         return self.title
     
+from django.db import models
+from datetime import timedelta
+
 class ProductScheme(models.Model):
-    product_id = models.CharField(max_length=100 , null=True)
+    product_id = models.CharField(max_length=100, unique=True, null=True)
     investment = models.DecimalField(max_digits=10, decimal_places=2)
-    total = models.DecimalField(max_digits=10, decimal_places=2 , null=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(auto_now_add=True)  # Automatically set to today's date when created
+    end_date = models.DateField(null=True, blank=True)  # Remove auto_now=True
     days = models.IntegerField()
+    total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
     def __str__(self):
-        return f"{self.product_id} - {self.investment}"
+        return f"Scheme for {self.product_id} - {self.investment} Investment"
+
+    def calculate_end_date(self):
+        """Calculate end date based on the start date and number of days."""
+        return self.start_date + timedelta(days=self.days)
+
+    def save(self, *args, **kwargs):
+        """Override save method to calculate end date before saving the model."""
+        if not self.end_date:
+            self.end_date = self.calculate_end_date()  # Calculate end_date before saving
+        super(ProductScheme, self).save(*args, **kwargs)
+
          
 
 class Payment(models.Model):
