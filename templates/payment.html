@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm to Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .wrapper {
+            text-align: center;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+            display: none; /* Hidden initially */
+        }
+        .card h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .card button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .card button:hover {
+            background: #0056b3;
+        }
+        .upload, .payment-options {
+            margin-top: 15px;
+            text-align: left;
+        }
+        .upload label, .payment-options p {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .upload input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #confirmBtn {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #confirmBtn:hover {
+            background: #218838;
+        }
+        .payment-options {
+            display: none; /* Hidden initially */
+        }
+        .qr-code {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .status {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .status.pending {
+            color: #ff9800;
+        }
+        .status.success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <button id="confirmBtn">Confirm</button>
+        <div class="card" id="paymentCard">
+            <button onclick="makePayment()">Make a Payment</button>
+            <div class="payment-options" id="paymentOptions">
+                <p>Choose a payment method:</p>
+                <ul>
+                    <li>Scan QR Code:</li>
+                    <div class="qr-code">
+                        <img src="{% static 'img/qr1.jpg' %}" alt="QR Code" />
+                    </div>
+                    <p>Account Number:</p>
+                    <p>IFSC Code:</p>
+                    <p>UPI ID:</p>
+                    {% comment %} <p>your-upi-id@bank</p> {% endcomment %}
+                </ul>
+                <button onclick="showUpload()">Submit Payment Proof</button>
+            </div>
+            <div class="upload" id="proofUpload" style="display: none;">
+                <label for="proof">Upload Payment Screenshot:</label>
+                <input type="file" id="proof" accept="image/*" />
+                <button onclick="submitProof()">Submit</button>
+            </div>
+            <div class="status" id="paymentStatus" style="display: none;">Payment Status: <span id="statusText">Pending</span></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('confirmBtn').addEventListener('click', function() {
+            document.getElementById('paymentCard').style.display = 'block';
+            document.getElementById('confirmBtn').style.display = 'none'; // Hide the Confirm button
+        });
+
+        function makePayment() {
+            alert('Please choose a payment method.');
+            document.getElementById('paymentOptions').style.display = 'block'; // Show payment options
+            updateStatus('pending');
+        }
+
+        function showUpload() {
+            document.getElementById('proofUpload').style.display = 'block'; // Show the upload section
+            alert('Upload a screenshot of your payment.');
+        }
+
+        function submitProof() {
+            const proofInput = document.getElementById('proof');
+            if (proofInput.files.length === 0) {
+                alert('Please upload a screenshot of your payment.');
+            } else {
+                alert('Proof submitted successfully!');
+                updateStatus('success'); // Update to Success on proof submission
+                setTimeout(() => {
+                    window.location.href = '/'; // Redirect to index page after 2 seconds
+                }, 2000);
+            }
+        }
+
+        function updateStatus(status) {
+            const statusElement = document.getElementById('paymentStatus');
+            const statusText = document.getElementById('statusText');
+            statusElement.style.display = 'block'; // Show the status section
+
+            if (status === 'pending') {
+                statusText.textContent = 'Pending';
+                statusText.className = 'status pending';
+            } else if (status === 'success') {
+                statusText.textContent = 'Approved';
+                statusText.className = 'status success';
+            }
+        }
+    </script>
+</body>
+</html>

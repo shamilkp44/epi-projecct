@@ -1,0 +1,239 @@
+/*register section*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image:url(/static/img/bg1.jpg);
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    max-width: 1200px;
+    height: 600px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.right-side {
+    flex: 1;
+    background-color: #ffffff;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    text-align: center;
+    position: relative;
+}
+
+.right-side .welcome-image {
+    width: 800px;
+    max-width: 500px;
+    height: 1000px;
+    border-radius: 0;
+    object-fit: cover;
+}
+
+.left-side {
+    flex: 1;
+    background-color: #636863;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.left-side h2 {
+    font-size: 2.1em;
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-family: "Jersey 15", serif;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.left-side form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 2px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        color: #333;
+        padding: 0px;
+    }
+
+    .form-group label {
+        font-size: 1em;
+        color: #333;
+        color: #ffffff;
+    }
+
+    .form-group input[type="file"]{
+        flex: 2;
+        padding: 2px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        text-align: left; /* Ensures the text inside the input aligns properly*/
+        color: #333;
+    }
+
+    .form-group .form-control {
+        flex: 2;
+        width: 100%;
+        padding: 2px;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 2px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        font-size: 1em;
+        color: #ffffff;
+    }
+
+    .form-check {
+        align-items: center;
+        color: #ffffff;
+    }
+
+    .form-check-input {
+        margin-right: 10px;
+    }
+
+    .terms-link {
+        color: #101011; /* Blue color */
+        text-decoration: none; /* Remove underline */
+        font-size: 12px; /* Set font size */
+    }
+
+    .terms-link:hover {
+        text-decoration: underline; /* Add underline on hover */
+        color: #0056b3; /* Darker blue on hover */
+    }
+
+    .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        width: 150px;
+        cursor: pointer;
+        align-self: center;
+        margin-top: 20px;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    p {
+        margin-top: 15px;
+        font-size: 1em;
+        color: #ffffff;
+    }
+
+    a {
+        color: #242a2f;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .text-danger {
+        color: red;
+        font-size: 0.9em;
+    }
+
+/* Popup styles */
+.popup, .overlay {
+    display: none;
+}
+
+.popup {
+    position: fixed;
+    display: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    text-align: center;
+}
+
+.popup button {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+
+.popup .close-btn {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+    }
+}

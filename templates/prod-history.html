@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Product History</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding:  20px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .service {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .service-item {
+            background-color: #ffffff;
+            box-shadow: 0 0 45px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 10px;
+            width: calc(25% - 20px);
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .service-img {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+        .service-img img {
+            width: 100%;
+            transition: 0.5s;
+        }
+        .service-item:hover .service-img img {
+            transform: scale(1.2);
+        }
+        .service-content {
+            padding: 10px;
+        }
+        .service-content a {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bolder;
+            color: #ffffff;
+        }
+        .service-content a i {
+            margin-right: 10px;
+        }
+        .service-item:hover {
+            box-shadow: 0 4px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .modal-header h3 {
+            margin: 0;
+        }
+        .modal-close {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 20px;
+        }
+        .modal-body p {
+            margin: 10px 0;
+            color: #555;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+
+        @media (max-width: 768px) {
+        .service-item {
+            width: calc(50% - 20px); /* Two items per row */
+        }
+        h1 {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .service-item {
+            width: calc(100% - 20px); /* One item per row */
+        }
+        h1 {
+            font-size: 18px;
+        }
+        .modal {
+            width: 90%; /* Wider modal for small screens */
+        }
+    }
+    </style>
+</head>
+<body>
+    {% csrf_token %}
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4">Product History</h1>
+        </div>
+        <div class="service">
+            <!-- Product Card -->
+             
+            <div class="service-item" id="product-card">
+                <div class="service-img">
+                    <!-- Image can go here -->
+                </div>
+                <div class="service-content">
+                    <a href="#" class="h4 mb-4 d-inline-flex text-start">
+                        <i class="fas fa-donate fa-2x me-2"></i>
+                    </a>
+                    <h3>{{ form.title.value }}</h3>
+                    <p><strong>Product ID:</strong> <span id="product-id">{{form.product_id.value}}</span></p> 
+                    <p><strong>Investment Scheme:</strong> <span id="investment-scheme">{{form.investment.value}}</span></p>
+                    <p><strong>Total Amount:</strong> <span id="product-amount">{{form.total.value}}</span></p>
+                    <p><strong>Balance:</strong> <span id="product-balance">{{ investment.initial_amount}}</span></p>
+                    <p><strong>Remaining Days:</strong> <span id="remaining-days"></span></p>
+                    <!-- Pay Now button inside the card -->
+                    <button style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                        <a href="{% url 'payment' %}" style="text-decoration: none; color: white;">Pay Now</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal and Overlay -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal" id="product-modal">
+        <div class="modal-header">
+            <h3>Product Details</h3>
+            <button class="modal-close" id="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Product ID:</strong> <span id="modal-product-id"></span></p>
+            <p><strong>Product Name:</strong> <span id="modal-product-name"></span></p>
+            <p><strong>Investment Scheme (₹):</strong> <span id="modal-investment-scheme"></span></p>
+            <p><strong>Product Total Amount (₹):</strong> <span id="modal-product-amount"></span></p>
+            <p><strong>Balance (₹):</strong> <span id="modal-product-balance"></span></p>
+            <p><strong>Remaining Days:</strong> <span id="modal-remaining-days"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Mock product details
+        const productDetails = {
+            id: "{{form.product_id.value}}",
+            name: "{{ form.title.value }}",
+            investment_scheme: "{{ form.investment.value }}",
+            total_amount: "{{form.total.value}}",
+            balance: "",
+            remaining_days: "",
+            image_url: 'lb.jpeg'
+        };
+
+        // Populate the modal with product details
+        function populateModal(details) {
+            document.getElementById('modal-product-id').textContent = details.id;
+            document.getElementById('modal-product-name').textContent = details.name;
+            document.getElementById('modal-investment-scheme').textContent = details.investment_scheme;
+            document.getElementById('modal-product-amount').textContent = details.total_amount;
+            document.getElementById('modal-product-balance').textContent = details.balance;
+            document.getElementById('modal-remaining-days').textContent = details.remaining_days;
+        }
+
+        // Show modal
+        // function showModal() {
+        //     document.getElementById('product-modal').style.display = 'block';
+        //     document.getElementById('modal-overlay').style.display = 'block';
+        // }
+
+        // Close modal
+        // function closeModal() {
+        //     document.getElementById('product-modal').style.display = 'none';
+        //     document.getElementById('modal-overlay').style.display = 'none';
+        // }
+
+        // // Event listeners
+        // document.getElementById('product-card').addEventListener('click', function () {
+        //     populateModal(productDetails);
+        //     showModal();
+        // });
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('modal-overlay').addEventListener('click', closeModal);
+    </script>
+</body>
+</html>
